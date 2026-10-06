@@ -32,6 +32,8 @@ class Introduction extends Component {
       return true;
     })();
 
+    const isExternalLink = /^https?:\/\//i.test(this.props.data.link);
+
     return (
       <div className='introduction'>
         <h1>
@@ -54,6 +56,8 @@ class Introduction extends Component {
               icon='upload'
               iconColor='#'
               caption={buttonText}
+              isExternal={isExternalLink}
+              target={isExternalLink ? '_blank' : ''}
             />
           )
           : null}

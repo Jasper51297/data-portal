@@ -69,7 +69,7 @@ Below is an example, with inline comments describing what each JSON block config
         "heading": "", // optional; title of introduction
         "text": "This is an example Gen3 Data Commons", // optional; text of homepage
         "buttonText": "Browse Studies", // optional; default is Submit/Browse Data
-        "link": "/submission" // optional; link for button underneath the text, default is /submission
+        "link": "/submission" // optional; link for button underneath the text, default is /submission; absolute URLs (http:// or https://) open in a new tab
       },
       "buttons": [ // optional; button “cards” displayed on the bottom of the homepage
         {

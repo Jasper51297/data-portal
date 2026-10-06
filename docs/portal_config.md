@@ -76,7 +76,7 @@ Below is an example, with inline comments describing what each JSON block config
           "name": "Define Data Field", // required; title of card
           "icon": "planning", // required; name of icon to display on card located in /img/icons
           "body": "Please study the dictionary before you start browsing.", // required; card text
-          "link": "/DD", // required; link for button
+          "link": "/DD", // required; link for button; relative links navigate within the portal, absolute URLs (http:// or https://) open in a new tab
           "label": "Learn more" // required; title of button that leads to link above
         },
         {

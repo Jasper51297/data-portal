@@ -34,6 +34,10 @@ class IndexButtonBar extends Component {
                   <Button
                     className='index-button-bar__item'
                     onClick={() => {
+                      if (/^https?:\/\//i.test(item.link)) {
+                        window.open(item.link, '_blank', 'noopener,noreferrer');
+                        return;
+                      }
                       this.props.onActiveTab(item.link);
                       this.props.history.push(`${item.link}`);
                     }}

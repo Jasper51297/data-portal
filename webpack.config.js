@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
 
@@ -174,6 +175,7 @@ const plugins = [
   }),
   */
   new webpack.optimize.AggressiveMergingPlugin(), // Merge chunks
+  new AntdDayjsWebpackPlugin(),
 ];
 
 const allowedHosts = process.env.HOSTNAME ? [process.env.HOSTNAME] : 'auto';
@@ -288,12 +290,19 @@ module.exports = {
     // },
     // {
       test: /\.jsx?$|\.tsx?$/,
-      exclude: /node_modules\/(?!(graphiql|graphql-language-service-parser|web-vitals)\/).*/,
+      exclude: /node_modules\/(?!(graphiql|web-vitals)\/).*/,
       use: {
         loader: 'babel-loader',
         options: {
           presets: ['@babel/preset-env', '@babel/react'],
-          plugins: ['@babel/plugin-proposal-class-properties'],
+          // turns `import Icon from './icon.svg'` into a React component at build time
+          plugins: [
+            ['inline-react-svg', {
+              svgo: {
+                plugins: [{ name: 'preset-default', params: { overrides: { removeViewBox: false } } }],
+              },
+            }],
+          ],
         },
       },
     },
@@ -304,7 +313,6 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           presets: ['@babel/preset-env', '@babel/react'],
-          plugins: ['@babel/plugin-proposal-class-properties'],
         },
       },
     },
@@ -322,11 +330,6 @@ module.exports = {
         'style-loader',
         'css-loader',
       ],
-    },
-    {
-      test: /\.svg$/,
-      // loaders: ['babel-loader', 'react-svg-loader'], // to address the `css-what` vulnerability issue, after updating to webpack 5 and latest `react-svg-loader` we can switch back to this
-      loader: 'svg-react-loader',
     },
     {
       test: /\.(png|jpg|gif|woff|ttf|eot)$/,
@@ -360,7 +363,6 @@ module.exports = {
       graphql: path.resolve('./node_modules/graphql'),
       react: path.resolve('./node_modules/react'), // Same issue.
       graphiql: path.resolve('./node_modules/graphiql'),
-      'graphql-language-service-parser': path.resolve('./node_modules/graphql-language-service-parser'),
     },
     extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx', '.json'],
   },

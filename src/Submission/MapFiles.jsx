@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import queryString from 'query-string';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 import pLimit from 'p-limit';
 import _ from 'lodash';
 import { AutoSizer, Column, Table } from 'react-virtualized';
@@ -30,8 +31,7 @@ const CONCURRENCY_LIMIT = 10;
 
 class MapFiles extends React.Component {
   constructor(props) {
-    const params = queryString.parse(window.location.search);
-    const message = params && params.message ? params.message : null;
+    const message = new URLSearchParams(window.location.search).get('message') || null;
     super(props);
     this.state = {
       selectedFilesByGroup: {},
@@ -128,7 +128,7 @@ class MapFiles extends React.Component {
   getSetSize = (set) => Object.keys(set).length
 
   getTableHeaderText = (files) => {
-    const date = moment(files[0].created_date).format('MM/DD/YY');
+    const date = dayjs(files[0].created_date).format('MM/DD/YY');
     return `uploaded on ${date}, ${files.length} ${files.length > 1 ? 'files' : 'file'}`;
   }
 
@@ -212,14 +212,14 @@ class MapFiles extends React.Component {
   groupUnmappedFiles = () => {
     const groupedFiles = {};
     this.props.unmappedFiles.forEach((file) => {
-      const fileDate = moment(file.created_date).format('MM/DD/YY');
+      const fileDate = dayjs(file.created_date).format('MM/DD/YY');
       if (groupedFiles[fileDate]) {
         groupedFiles[fileDate].push(file);
       } else {
         groupedFiles[fileDate] = [file];
       }
     });
-    const sortedDates = Object.keys(groupedFiles).sort((a, b) => moment(b, 'MM/DD/YY') - moment(a, 'MM/DD/YY'));
+    const sortedDates = Object.keys(groupedFiles).sort((a, b) => dayjs(b, 'MM/DD/YY') - dayjs(a, 'MM/DD/YY'));
     this.setState({ sortedDates });
     return groupedFiles;
   }
@@ -425,7 +425,7 @@ class MapFiles extends React.Component {
                           label='Uploaded Date'
                           dataKey='created_date'
                           width={300}
-                          cellRenderer={({ cellData }) => <div>{ moment(cellData).format('MM/DD/YY, hh:mm:ss a [UTC]Z') }</div>}
+                          cellRenderer={({ cellData }) => <div>{ dayjs(cellData).format('MM/DD/YY, hh:mm:ss a [UTC]Z') }</div>}
                         />
                         <Column
                           label='Status'
